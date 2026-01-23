@@ -33,6 +33,7 @@ def extract_notes_to_html(xml_file, output_html):
             return text
 
         # Extract individual notes from nested <id-*> tags, skipping locked notes
+        # Ensure notes are processed in the order they appear in the XML file
         notes = []
         for note in notes_section:
             # Skip notes that are locked
@@ -45,7 +46,8 @@ def extract_notes_to_html(xml_file, output_html):
 
             note_title = note.find("name").text if note.find("name") is not None else "Untitled"
             note_content_element = note.find("text")
-            note_content = get_recursive_text(note_content_element) if note_content_element is not None else ""
+            # Preserve the semi-HTML content in the <text> sections
+            note_content = ET.tostring(note_content_element, encoding='unicode', method='html') if note_content_element is not None else ""
             notes.append((note_title, note_content))
 
         # Generate HTML content with expandable notes
