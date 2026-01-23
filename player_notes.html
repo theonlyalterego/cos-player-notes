@@ -5,11 +5,12 @@
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Player Notes</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1 { text-align: center; }
-                .note { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-                .note h2 { margin: 0; cursor: pointer; }
+                body { margin: 20px; }
+                .note { margin-bottom: 20px; }
+                .note-title { cursor: pointer; }
                 .note-content { display: none; margin-top: 10px; }
             </style>
             <script>
@@ -23,23 +24,27 @@
                 }
             </script>
         </head>
-        <body>
-            <h1>Player Notes</h1>
+        <body class="container">
+            <h1 class="text-center my-4">Player Notes</h1>
         
-            <div class='note'>
-                <h2 onclick="toggleContent('note-0')">Lancelot</h2>
-                <div class='note-content' id='note-0'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-0')">
+                    <h5 class='mb-0'>Lancelot</h5>
+                </div>
+                <div class='card-body note-content' id='note-0'>
+                    <text type="formattedtext">
 				<p>Good boi</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-1')">Session 06</h2>
-                <div class='note-content' id='note-1'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-1')">
+                    <h5 class='mb-0'>Session 06</h5>
+                </div>
+                <div class='card-body note-content' id='note-1'>
+                    <text type="formattedtext">
 				<p>(Journal kept by Rachel today, because Vaelen is off doing Wizard stuff and not speaking to anybody)</p>
 				<p>Woke up this morning at the huge, creepy gates. Time to start searching for that Inn we were talking about. Hotcakes and syrup sounds like a much better breakfast than hardtack and nothing.</p>
 				<p>We found a road sign at the gates, this is the Old Svalich Road to a town called Barovia.</p>
@@ -57,14 +62,16 @@
 				<p>We went to the local church to try and figure out what's been going on and what we can do about it. Father Donavich let us in. The church was a shambles and had clearly been attacked recently. We heard a voice come from underneath the floorboards, talking about how hungry it was. Father Donavich was not mentally stable and it was difficult to talk to him and get any information out of him. But it seems that his son, Doru, had been turned into a Vampire a year before, during a failed rebellion against Castle Ravenloft. Doru was locked in the church basement and was the voice we'd heard earlier.</p>
 				<p>We decided to leave the church be, and spend the rest of our daylight fortifying the Mayor's house.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-2')">Session 07</h2>
-                <div class='note-content' id='note-2'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-2')">
+                    <h5 class='mb-0'>Session 07</h5>
+                </div>
+                <div class='card-body note-content' id='note-2'>
+                    <text type="formattedtext">
 				<p>We walked back from the church to the Burgomaster's house, looking over some supplies at Bildrath's wildly overpriced general store on the way.</p>
 				<p>Bildrath mentioned a Black Mage who'd come through decades before, leading a revolution against Strahd. Apparently Strahd does not react well to defiance and punished the town by slaughtering random peasants for days.</p>
 				<p>It seems this is happening again. Strahd's minions have been ravaging this town for the past days. The town is likely very dangerous at night. We've talked about going somewhere safer, but Ireena won't leave until her father is safely buried.</p>
@@ -74,14 +81,16 @@
 				<p>Tomorrow at dawn, we'll bury the Burgomaster in hallowed ground. Rachel's entire plan after that is to (1) take a nap; (2) get some more of that pie; (3) more nap; (4) more pie; and finally (5) Assume by then that Francis will have some kind of plan to get out of this terrible place and back home.</p>
 				<p>Ireena mentioned that she would consult a local fortune teller after burying her father. Perhaps she might have some advice for us as well.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-3')">Session 08</h2>
-                <div class='note-content' id='note-3'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-3')">
+                    <h5 class='mb-0'>Session 08</h5>
+                </div>
+                <div class='card-body note-content' id='note-3'>
+                    <text type="formattedtext">
 				<p>No brooms were harmed over the first night, our first in Barovia.</p>
 				<p>Ismark told the story of Doro's rebellion. About three months ago, Doro tried to storm Castle Ravenloft with a group of followers. Nobody has seen him since. Although we heard him yesterday afternoon ...</p>
 				<p>We accompanied Ismark to the Church. Father Donovitch explained: "Doro came back two days ago, sent by Strahd. He's been turned into a Vampire, and has my Holy Symbol. He's in control of himself! He wants a chance! He can't fully resist Strahd, but he can control his actions. He allowed me to bring him to the basement. He has my holy symbol".</p>
@@ -91,14 +100,16 @@
 				<p>We also agreed to keep an eye out for Mary, a lost village girl, who went to find "Her prince in a castle". Her mother offered us a doll. Another side quest to find a lost family in the woods.</p>
 				<p>We found the lost family. They were zombies :(</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-4')">Session 10</h2>
-                <div class='note-content' id='note-4'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-4')">
+                    <h5 class='mb-0'>Session 10</h5>
+                </div>
+                <div class='card-body note-content' id='note-4'>
+                    <text type="formattedtext">
 				<p>Taking a short rest. (1 hr)We learn Rachel saw herself in the gallows. She thinks that strahd brought her here to paint for him.But why did he bring the rest of us?Thinking back we have seen no sunlight since we have passed the large stone gates.We also take some time to read our guide on vampires.https://voltor.narod.ru/vr/vr01_00.htm Van Richten's Guide to Vampires (Pinned in discord)We continue down the trail to find a Vistani village and are greeted by Stanimir.</p>
 				<linklist>
 					<link class="imagewindow" recordname="image.id-00064@DD Curse of Strahd">Image: DM Map - Tser Pool Encampment
@@ -120,14 +131,16 @@
 				<p>Gregor wins (with us guessing as him)</p>
 				<p>Rachel attempts to talk to arturiHe is pursued by undead every night. A danger if he stayed here. Hes endured this for 18 years.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-5')">Session 17</h2>
-                <div class='note-content' id='note-5'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-5')">
+                    <h5 class='mb-0'>Session 17</h5>
+                </div>
+                <div class='card-body note-content' id='note-5'>
+                    <text type="formattedtext">
 				<p>Heading to Luna River crossroads where Yan was found. We walk south along the river to investigate.We find some footsteps and a spot where a fight might have happened or went to the trees, possibly an animal or druid. No real answers here.We investigate the ring a little more to see if it gives us any more answers.The ring has symbols of evocation and necromancy but no one can discern more.</p>
 				<linklist>
 					<link class="item" recordname="item.id-00010">Item: Signet Ring (Plot Item)
@@ -138,14 +151,16 @@
 				<p>Identify gets us that the Signet ring is magical, but nothing really more.WE head to the barons estate:</p>
 				<p>WE trade help expelling a ghost from the estate for access to the library and start exploring and talking to the staff.We head to th</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-6')">Session 11</h2>
-                <div class='note-content' id='note-6'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-6')">
+                    <h5 class='mb-0'>Session 11</h5>
+                </div>
+                <div class='card-body note-content' id='note-6'>
+                    <text type="formattedtext">
 				<p>After dinner and story time, we pitched out tents for the evening. Shortly before midnight, we snuck out of camp toward the Gallows.</p>
 				<p>On the way, we encountered Eliza, who had been following us out of camp. We also saw a floating blue light in the woods, and chose not to spend time chasing it.</p>
 				<p>Eliza managed to stealthily follow us to the crossroads, but Madam Eva spotted her. We chased her down.</p>
@@ -161,14 +176,16 @@
 					<link class="item" recordname="partysheet.treasureparcelitemlist.id-00019">Item: Eliza's Log Book
 				</linklist>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-7')">Session 12</h2>
-                <div class='note-content' id='note-7'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-7')">
+                    <h5 class='mb-0'>Session 12</h5>
+                </div>
+                <div class='card-body note-content' id='note-7'>
+                    <text type="formattedtext">
 				<p>We arose early the next morning, took our leave, and hit the road to Vallakai. We walked through hilly, nearly mountainous country, and the road got progressively worse. We passed an abandoned watch tower, and saw two fresh graves and a dead wolf.</p>
 				<p>We saw movement in the woods - Gregor said it was a living wolf - and soon spotted a full wolf pack approaching us. We fought them off, but then noticed two huge, hulking wolves observing us with an eerie calm and concentration. Gregor consulted his pamphlet and believes that they are werewolves.</p>
 				<linklist>
@@ -178,14 +195,16 @@
 				<p>The road continues down from the mountains into a creepy woods. A raven seemed to have been following us as we approached the town of Vallakai. A break in the woods gave us a view of Lake Zarovich - strangely, Ireena recognized the shore as the beach from her dream. We spotted a hidden figure in the woods, and generally had a strange feeling of being watched. Perhaps not only by the ravens following us.</p>
 				<p>We approached a clearing in the woods, notable for being on a map. A map which we'll likely see next session.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-8')">Session 13</h2>
-                <div class='note-content' id='note-8'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-8')">
+                    <h5 class='mb-0'>Session 13</h5>
+                </div>
+                <div class='card-body note-content' id='note-8'>
+                    <text type="formattedtext">
 				<p>We continued along the ominous road to Vallakai, when we were suddenly ambushed by wolves, and then two werewolves. Francis and Gregor were injured, but otherwise seem to be okay.</p>
 				<p>The werewolves turned into young men, who we buried by the endge of the forest. I sketched their faces, maybe someone in town might know them.</p>
 				<p>We bound Francis' wounds as best we could, and continued on toward town.</p>
@@ -197,24 +216,28 @@
 				<p>We plan to spend the night outside the gates, defending these people over night.</p>
 				<p>We made common cause with the refugees, and organized them into a more defensible formation. We await nightfall and the inevitable attacks. Around midnight, clouds of bats descended from the misty skies and set upon the refugees. We destroyed the bats, with some impressive fire spells from "Artur the Wolf-Slayer".</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-9')">00 - \nHealer Kit 9/10 charges</h2>
-                <div class='note-content' id='note-9'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-9')">
+                    <h5 class='mb-0'>00 - \nHealer Kit 9/10 charges</h5>
+                </div>
+                <div class='card-body note-content' id='note-9'>
+                    <text type="formattedtext">
 				<p></p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-10')">Session 14</h2>
-                <div class='note-content' id='note-10'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-10')">
+                    <h5 class='mb-0'>Session 14</h5>
+                </div>
+                <div class='card-body note-content' id='note-10'>
+                    <text type="formattedtext">
 				<p>We treated the refugees' wounds and lay down for the rest of the night.</p>
 				<p>We discussed the Guards' spellcaster, Izek, who bore a "twisted devi's arm", and who in the past has attacked the refugees.</p>
 				<p>Shortly after Midnight, we were attacked by wolves. I'm starting to understand how the refugees were so injured when we arrived. Tactics were discussed.</p>
@@ -231,14 +254,16 @@
 				</linklist>
 				<p>All of the toys look like they were made by a demented serial killer. We bought a ventriloquist dumy which looked like Strahd, and an out-of-tune music box merry-go-round which showed wolves chasing terrified children.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-11')">Session 16</h2>
-                <div class='note-content' id='note-11'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-11')">
+                    <h5 class='mb-0'>Session 16</h5>
+                </div>
+                <div class='card-body note-content' id='note-11'>
+                    <text type="formattedtext">
 				<p>The Coffin Maker,</p>
 				<linklist>
 					<link class="imagewindow" recordname="image.id-00088@DD Curse of Strahd">Henrik van der Voort
@@ -260,14 +285,16 @@
 					<link class="item" recordname="item.id-00008">Item: St Andral's Bones
 				</linklist>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-12')">Session 16, cont'd</h2>
-                <div class='note-content' id='note-12'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-12')">
+                    <h5 class='mb-0'>Session 16, cont'd</h5>
+                </div>
+                <div class='card-body note-content' id='note-12'>
+                    <text type="formattedtext">
 				<p>We rested up after the vampire fight, then went to make our toy delivery.</p>
 				<p>The Vistani camp is on top of a hill, surrounded by elvish houses.</p>
 				<linklist>
@@ -287,14 +314,16 @@
 				<p>The ring has some magical properties, Evocation and Necromancy, but the sorcerors couldn't figure out what specific magic the ring can do.</p>
 				<p>The Elves described the crossroads where Yan was found. We're heading there to investigate.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-13')">Session 18</h2>
-                <div class='note-content' id='note-13'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-13')">
+                    <h5 class='mb-0'>Session 18</h5>
+                </div>
+                <div class='card-body note-content' id='note-13'>
+                    <text type="formattedtext">
 				<p>We approached the closed, glyphed door in the attic. A glyph set off a blast of fear, but we stood firm.</p>
 				<p>Behind the door was a small apartment, with many books, scrolls, and an undead skeletal cat. And, it turns out, an invisible kid necromancer:</p>
 				<linklist>
@@ -331,14 +360,16 @@
 				<p>The bed had been slept in recently. We noticed a patch of yellow lily pads in the lake below.</p>
 				<p>I grabbed a ruler off of the desk on the top floor. Maybe Viktor can make a wand out of it.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-14')">00 Quest Log</h2>
-                <div class='note-content' id='note-14'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-14')">
+                    <h5 class='mb-0'>00 Quest Log</h5>
+                </div>
+                <div class='card-body note-content' id='note-14'>
+                    <text type="formattedtext">
 				<p>DONE Find holy bones</p>
 				<p>DONE Deal with haunting</p>
 				<p>DONE Deliver a birthday present</p>
@@ -361,14 +392,16 @@
 				<p>---</p>
 				<p>Defeat the Vampire Strahd</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-15')">Session 19</h2>
-                <div class='note-content' id='note-15'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-15')">
+                    <h5 class='mb-0'>Session 19</h5>
+                </div>
+                <div class='card-body note-content' id='note-15'>
+                    <text type="formattedtext">
 				<p>We decided to check out the lily pads, which were close to the tower island, adjacent to the causeway. The leaves, and rocks near shore, were covered with yellow paint. Buckets of paint had been dumped there. The yellow paint looked very similar to the carnival wagon we'd seen in Vallakai, "Rictavio's Carnival of Wonders", outside the coffinmaker's shop which had been taken over by a vampire.</p>
 				<p>Artur volunteered to dive in and grab some pots. He complained about the duckweed trying to grapple him, but succeessfully roped the pots. They were too heavy for us, but not for the four clay golems.</p>
 				<p>All of the pots were chained together, and we also got a bonus small waterproof chest, containing four unmagical vials of clear water.</p>
@@ -396,14 +429,16 @@
 				<p>The session ended when Arrugal showed up. He'd been following us and was convinced we knew where Arabelle was. We calmed him down to the point where we could talk to each other, but we'll have to resolve this.</p>
 				<p>(and I TOLD you guys there's a secret passage into town!!!)</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-16')">Session 20</h2>
-                <div class='note-content' id='note-16'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-16')">
+                    <h5 class='mb-0'>Session 20</h5>
+                </div>
+                <div class='card-body note-content' id='note-16'>
+                    <text type="formattedtext">
 				<p>We spoke with Arrugal and "Rictavio", explaining why we were keeping Arabelle's location secret, and about the bounty and Escher. He would surely be convinced after some light speaking-with-dead.</p>
 				<p>We also spotted a "Wanted for Information" poster, displaying Ireena. Quite worrisome.</p>
 				<p>Anyway, Gregor took the Talisman of Echoes and prepared to speak with Yan.</p>
@@ -441,42 +476,48 @@
 				<p>Izek has lunch at the town square. Teresqa, the Baron's cook, brings him two bottles of wine and a meal. He sometimes speaks with his informers. He carries the bottles around with him, sipping all afternoon. He heads to the gates to take in reports. In the evening, he heads up north to the lake to drink alone.Lady Fiona provided a poisoned bottle of Red Dragon Crush.</p>
 				<p>Returning to our original plan, we set up an ambush in the woods to flush out Strahd's spies.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-17')">Session 21</h2>
-                <div class='note-content' id='note-17'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-17')">
+                    <h5 class='mb-0'>Session 21</h5>
+                </div>
+                <div class='card-body note-content' id='note-17'>
+                    <text type="formattedtext">
 				<p>We set up our ambush - Rachel in a tent, Gregor pretending (or "pretending") to fall asleep as a lazy guard, and Francis, Artur, and Valen hiding in the woods. Arrugal and Luvash spread a rumor that Arabelle was being kept in this place in the woods.</p>
 				<p>We waited for several uneventful hours.</p>
 				<p>Two men approached, apparently hunters, and chatted with Gregor for a while. Then they turned into werewolves and shared a pot of tea?</p>
 				<p>No, they attacked us, and then called for help from four more werewolves.</p>
 				<p>We killed the first two werewolves, the other four ran away. Great for now, probably going to be a problem later. They seem to be grudge-holders.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-18')">Session 22</h2>
-                <div class='note-content' id='note-18'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-18')">
+                    <h5 class='mb-0'>Session 22</h5>
+                </div>
+                <div class='card-body note-content' id='note-18'>
+                    <text type="formattedtext">
 				<p>We returned to our camp site and set up our ambush again. Hours passed, and the light became dim, then dark.</p>
 				<p>We were awakened by the sound of many bat wings. They swarmed out of the sky to our campfire. We got jumped by a wight, then more bats showed up, and then a Strix.</p>
 				<p>At no point did anyone attempt to kidnap "Arabella". We waited throughout the morning, and decided that our kidnapping plan was a bust.</p>
 				<p>We returned to town, to find that Izek had plundered the inn and church, capturing Ireena. He dragged her off in chains to the Burgomaster's mansion, and hasn't been seen since.</p>
 				<p>We ingratiated ourselves with the cook, and were kind enough to help her carry some groceries into the house. We brought our wine bottle to Izek. We were shown to the library, where next session we will "interview" him.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-19')">Session 23</h2>
-                <div class='note-content' id='note-19'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-19')">
+                    <h5 class='mb-0'>Session 23</h5>
+                </div>
+                <div class='card-body note-content' id='note-19'>
+                    <text type="formattedtext">
 				<p>***Note***</p>
 				<p>Ned got random visitors literally 5 minutes before game time, and didn't immediately kick them out, so we went with a side quest for a bit before our inevitable combat.</p>
 				<p>***</p>
@@ -509,14 +550,16 @@
 				<p>Lady Fiona can put the circle down temporarily, but she's worried that reducing its protection can put them in danger. Her family died years ago before the barrier was created.</p>
 				<p>She has a small scale model of the house itself. She offered a short prayer, and a circle of gray light appeared on the model, which then disappeared. Stella manifested and her mother was convinced that we knew what we were talking about.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-20')">Session 24</h2>
-                <div class='note-content' id='note-20'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-20')">
+                    <h5 class='mb-0'>Session 24</h5>
+                </div>
+                <div class='card-body note-content' id='note-20'>
+                    <text type="formattedtext">
 				<p>We started out with a flashback to Gregor drinking with Izek while we started in on Stella's subplot.</p>
 				<p>Gregor immediately poured out a round of the poisoned wine.</p>
 				<p>He started off a little bit on the wrong foot, offending Izek and momentarily confising Ireena and Arabella. Both of them failed some saves, but Gregor tricked him into revealing some of his back story. He grew up with his sister in Vallakai. His sister was killed by wolves, he lost an arm, but "got strong". The Baron adopted him and he became an enforcer and captain of the guards.</p>
@@ -524,14 +567,16 @@
 				<p>Izek told a story of revenge against wolves, wiping out a den of wolves with his guards. We countered with our fight vs the werewolves.</p>
 				<p>We beat Izek. It was a very difficult fight. We managed to defeat him, and prevented him from setting his house on fire.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-21')">Session 25</h2>
-                <div class='note-content' id='note-21'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-21')">
+                    <h5 class='mb-0'>Session 25</h5>
+                </div>
+                <div class='card-body note-content' id='note-21'>
+                    <text type="formattedtext">
 				<p>(Almost) everyone showed up on time tonight! I arrived at 3:05 to find everyone already present!. LOL</p>
 				<p>We brought Izek's head to Lady Wächter. She was prepared, and sent a dozen guards out to do whatever she had planned. Surely this won't come back to bite us.</p>
 				<p>Lady Wächter suggested that it would be possible to bind the Night Hag(s)? with a magical circle similar to the one surrounding her house.</p>
@@ -563,14 +608,16 @@
 				<p>Morgantha Stormreaver. Belladonna Sunbane. Offalia Wormwiggle</p>
 				<p>We also got a bag with some cash, gems, and a charm of Heroism!</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-22')">Session 26</h2>
-                <div class='note-content' id='note-22'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-22')">
+                    <h5 class='mb-0'>Session 26</h5>
+                </div>
+                <div class='card-body note-content' id='note-22'>
+                    <text type="formattedtext">
 				<p>After a month and a half, we're standing in front of a windmill.</p>
 				<p>We went over the Hag's contract, written on humanoid skin. Yuck. It's written in some kind of magical text that we couldn't read.</p>
 				<p>Lady Wächter started her circle, Viktor stood ready to counterspell any attempt to block it, and we ran right in!</p>
@@ -584,14 +631,16 @@
 				<p>We barely defeated the shadow creatures. They offered us knowledge which would presumably have helped us later ... but we turned them down. Hard pass.</p>
 				<p>Once they went down, the Windmill started crumbling. Artur and I rushed upstairs to rescue the kids. They were chained to the bed, but I picked the locks and we got them out - one ran down the stairs, Artur had to grab the other and escape out the window.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-23')">Session 28 - Death to Ravioli</h2>
-                <div class='note-content' id='note-23'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-23')">
+                    <h5 class='mb-0'>Session 28 - Death to Ravioli</h5>
+                </div>
+                <div class='card-body note-content' id='note-23'>
+                    <text type="formattedtext">
 				<p>A new hand touches the beacon: the best log writer ever.</p>
 				<p>We continue our quest to save Vaelen from lycanthropy. In the ruins of Berez, we shall find Baby Lasagna, and she will scry to find the Krezk Burgermaster's son.</p>
 				<p>We come to a foggy swamp that is creepy as all heck. The town is more of a sunken ruin, really, with an eerie and unnatural fog. We find meet Winestia, probably a witch, and she takes us to Baba, who lives on a big hut, 15 feet off the ground on a big rotting stump. We climb up, and the hut is about what you would expect from a witch's hut. The random hanging skin flaps really pull the whole room together.</p>
@@ -602,14 +651,16 @@
 				<p>Back in Vallaki, we give the wolfsbane to Rictavio, and he gets to work brewing a potion for Vaelen. We have some tea and dinner at the Blue Water Inn, and return to Rictavio, who elaborates that this potion only suppresses the lycanthropy for the night of the full moon. The night, thankfully, passes uneventfully.</p>
 				<p>We head to the vineyard to figure out why Davian Martikov is not shipping wine. Maria, a lively young lady joins us, and we head down the road to the south. On our way there, we perceive a pit trap in the road, and fight some vine monsters.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-24')">Session 29 - The Grapes of Wrath</h2>
-                <div class='note-content' id='note-24'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-24')">
+                    <h5 class='mb-0'>Session 29 - The Grapes of Wrath</h5>
+                </div>
+                <div class='card-body note-content' id='note-24'>
+                    <text type="formattedtext">
 				<p>We start off by fighting Vine Blights...which was a little anti-climactic, but we will not complain.</p>
 				<p>The blights appeared to look a lot like grape vines! Interesante. Perhaps this is why the wine is not flowing?</p>
 				<p>We get to the vineyard, and it is very gloomy...it starts raining, we hear the caws of strix, and a hooded old dude near the edge of a nearby forest beckons us. We were not interested in free candy, but Muriel the wereraven urges us to follow him. We go underground to a refuge...and find the Martikovs.</p>
@@ -619,14 +670,16 @@
 				<p>As we go through the winery, we overcome three druid encounters, each accompanied by more vine blights.</p>
 				<p>Artur's lightning bolt blasted the crap out of our last fight.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-25')">Session 30 - Maybe Touch the Staff</h2>
-                <div class='note-content' id='note-25'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-25')">
+                    <h5 class='mb-0'>Session 30 - Maybe Touch the Staff</h5>
+                </div>
+                <div class='card-body note-content' id='note-25'>
+                    <text type="formattedtext">
 				<p>Shaun's first session! ("Molock" the Tiefling Monk)</p>
 				<p>We rescue a raven, who appears to be a wereraven. When they leave the cage, they become a naked Tiefling. Molock claims to have been traveling with the Martikovs, which is how they contracted lycanthropy.</p>
 				<p>We proceed and find a tree leaking blood and a man with a staff...DUN DUN DUN! It is also leaking blood and smoke. There are strixes up in the tree. He seems quite mad, and talks about the wild folk. Something about Wintersplinter coming.</p>
@@ -634,14 +687,16 @@
 				<p>At some point, your notetakeer failed you.</p>
 				<p>We fought an insane amount of needle blights, but ended the plague.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-26')">Session 31 - The Notetaker you Deserve</h2>
-                <div class='note-content' id='note-26'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-26')">
+                    <h5 class='mb-0'>Session 31 - The Notetaker you Deserve</h5>
+                </div>
+                <div class='card-body note-content' id='note-26'>
+                    <text type="formattedtext">
 				<p>The winery is the soul source of happiness for the people of Barovia. The wine is no longer flowing. This is related somehow to Baba Lysaga.</p>
 				<p>The druids of Yester Hill are summoning Wintersplinter, which is some kind of monster.</p>
 				<p>Gregor says we should have a diamond in case we die.</p>
@@ -652,14 +707,16 @@
 				<p>We go up the sneaky route...and assail the druids. Many druids. Strahd showed up carrying a chess pawn...whatever, bro. Let's just save the wine.</p>
 				<p>The lead druid cast a wall of thorns around the chanting drum circle hippies, then a giant mist. Who knows what is happening. We left off mid-combat.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-27')">Session 32 - Vampire Druid Horseshit</h2>
-                <div class='note-content' id='note-27'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-27')">
+                    <h5 class='mb-0'>Session 32 - Vampire Druid Horseshit</h5>
+                </div>
+                <div class='card-body note-content' id='note-27'>
+                    <text type="formattedtext">
 				<p>We got really messed up by the vampire lady who was defending the druid incantation, and had to retreat. We went back to the wereravens at the vineyard, and gave them the bad news. We made it back to Vallaki, and we spent the rest of the night helping Victor rescue the ghost girl.</p>
 				<p>We were led through a couple of secret doors in Wachterhaus, and come to a pentagram in the cellar. We travel to the ethereal realm! There is no way this can go poorly for us.</p>
 				<p>A wild Stella appears! Victor starts casting his spell to get Stella back in the physical realm.</p>
@@ -667,31 +724,35 @@
 				<p>We fight him, then he steals Rachel away...</p>
 				<p>CLIFFHANGER TIME</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-28')">Session 33 - Moloch Untouched</h2>
-                <div class='note-content' id='note-28'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-28')">
+                    <h5 class='mb-0'>Session 33 - Moloch Untouched</h5>
+                </div>
+                <div class='card-body note-content' id='note-28'>
+                    <text type="formattedtext">
 				<p>After a hearty battle, we overcome the undead nonsense, and Victor completes his ritual. Rachel kindly asks Erasmus if he wants to pass on words to Daddy von Richten, and he would like his father to know that all is forgiven, and that he will keep the Ethereal Plane safe.Erasmus says there are strange spiders going in and out of the plane to the south of Mallaki...we saw their lair. Strahd also visits the plane via his nightmare.</p>
 				<p>We got a book from Victor...a magic tome with an arcane lock. We couldn't figure out the password, but it is word-activated. Lady Wachter also gave us the big ole mirror...we can shrink and expand it with a command. We can gaze into the ethereal plane within 60 ft using this, and also commune if we have the ability to do so...maybe with hand gestures like what Victor was doing with Stella. Rachel takes it with her.</p>
 				<p>We rest during the evening, and head out in the middle of the night. Always a great idea in Barovia. We are assaulted by werewolves...but wipe them with limited wounds. We chase something in the woods, and end up with a butterfly statue. We end there before investigating it.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             
-            <div class='note'>
-                <h2 onclick="toggleContent('note-29')">Session 34 - Highlight of My Week</h2>
-                <div class='note-content' id='note-29'>
-                    <p><text type="formattedtext">
+            <div class='note card'>
+                <div class='card-header note-title' onclick="toggleContent('note-29')">
+                    <h5 class='mb-0'>Session 34 - Highlight of My Week</h5>
+                </div>
+                <div class='card-body note-content' id='note-29'>
+                    <text type="formattedtext">
 				<p>We were assaulted by a Wall of Text...important email.</p>
 				<p>We took a rest at the cairn while talking to Kavan the ghost, and discussed tactics.</p>
 				<p>Back to big druid hill to try to interrupt the Wintersplinter ritual. We go up the main road and start blasting.</p>
 			</text>
-		</p>
+		
                 </div>
             </div>
             

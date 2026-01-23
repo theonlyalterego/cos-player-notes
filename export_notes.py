@@ -50,7 +50,7 @@ def extract_notes_to_html(xml_file, output_html):
             note_content = ET.tostring(note_content_element, encoding='unicode', method='html') if note_content_element is not None else ""
             notes.append((note_title, note_content))
 
-        # Generate HTML content with expandable notes
+        # Generate HTML content with Bootstrap for better styling
         html_content = """
         <!DOCTYPE html>
         <html lang="en">
@@ -58,11 +58,12 @@ def extract_notes_to_html(xml_file, output_html):
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Player Notes</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
             <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1 { text-align: center; }
-                .note { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-                .note h2 { margin: 0; cursor: pointer; }
+                body { margin: 20px; }
+                .note { margin-bottom: 20px; }
+                .note-title { cursor: pointer; }
                 .note-content { display: none; margin-top: 10px; }
             </style>
             <script>
@@ -76,16 +77,18 @@ def extract_notes_to_html(xml_file, output_html):
                 }
             </script>
         </head>
-        <body>
-            <h1>Player Notes</h1>
+        <body class="container">
+            <h1 class="text-center my-4">Player Notes</h1>
         """
 
         for idx, (title, content) in enumerate(notes):
             html_content += f"""
-            <div class='note'>
-                <h2 onclick=\"toggleContent('note-{idx}')\">{title}</h2>
-                <div class='note-content' id='note-{idx}'>
-                    <p>{content}</p>
+            <div class='note card'>
+                <div class='card-header note-title' onclick=\"toggleContent('note-{idx}')\">
+                    <h5 class='mb-0'>{title}</h5>
+                </div>
+                <div class='card-body note-content' id='note-{idx}'>
+                    {content}
                 </div>
             </div>
             """
