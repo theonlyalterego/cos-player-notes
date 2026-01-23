@@ -24,14 +24,31 @@ def extract_notes_to_html(xml_file, output_html):
             print("No <notes> section found in the XML file.")
             return
 
-        # Extract individual notes from nested <id-*> tags
+        def get_recursive_text(element):
+            """Recursively extract text from an XML element and its children."""
+            text = (element.text or "").strip()
+            for child in element:
+                text += get_recursive_text(child)
+            text += (element.tail or "").strip()
+            return text
+
+        # Extract individual notes from nested <id-*> tags, skipping locked notes
         notes = []
         for note in notes_section:
+            # Skip notes that are locked
+            locked = note.find("locked")
+            if locked is not None:
+                continue
+            is_public = note.find("public")
+            if is_public is None:
+                continue
+
             note_title = note.find("name").text if note.find("name") is not None else "Untitled"
-            note_content = note.find("text").text if note.find("text") is not None else ""
+            note_content_element = note.find("text")
+            note_content = get_recursive_text(note_content_element) if note_content_element is not None else ""
             notes.append((note_title, note_content))
 
-        # Generate HTML content
+        # Generate HTML content with expandable notes
         html_content = """
         <!DOCTYPE html>
         <html lang="en">
@@ -43,18 +60,31 @@ def extract_notes_to_html(xml_file, output_html):
                 body { font-family: Arial, sans-serif; margin: 20px; }
                 h1 { text-align: center; }
                 .note { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-                .note h2 { margin: 0 0 10px; }
+                .note h2 { margin: 0; cursor: pointer; }
+                .note-content { display: none; margin-top: 10px; }
             </style>
+            <script>
+                function toggleContent(id) {
+                    const content = document.getElementById(id);
+                    if (content.style.display === "none") {
+                        content.style.display = "block";
+                    } else {
+                        content.style.display = "none";
+                    }
+                }
+            </script>
         </head>
         <body>
             <h1>Player Notes</h1>
         """
 
-        for title, content in notes:
+        for idx, (title, content) in enumerate(notes):
             html_content += f"""
             <div class='note'>
-                <h2>{title}</h2>
-                <p>{content}</p>
+                <h2 onclick=\"toggleContent('note-{idx}')\">{title}</h2>
+                <div class='note-content' id='note-{idx}'>
+                    <p>{content}</p>
+                </div>
             </div>
             """
 
