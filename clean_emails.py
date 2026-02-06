@@ -4,6 +4,7 @@ import re
 import hashlib
 import base64
 from bs4 import BeautifulSoup
+from email.utils import parsedate_to_datetime
 
 # CONFIGURATION
 MBOX_FILE = './emails/takeout-20260206T185416Z-3-001/Takeout/Mail/RPG-Curse of Strahd.mbox'
@@ -168,8 +169,13 @@ for message in mailbox.mbox(MBOX_FILE):
 
     threads[clean_subj].append({
         'date': message['date'],
+        'date_parsed': parsedate_to_datetime(message['date']) if message['date'] else None,
         'body': clean_html(html_body, image_map)
     })
+
+# Sort each thread by date (oldest first)
+for subject in threads:
+    threads[subject].sort(key=lambda msg: msg['date_parsed'] or parsedate_to_datetime('1 Jan 1970'))
 
 # Write out the files as complete HTML documents
 for subject, messages in threads.items():
