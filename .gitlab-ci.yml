@@ -1,0 +1,23 @@
+image: python:3.13
+
+pages:
+  stage: deploy
+  script:
+    # Install dependencies
+    - pip install beautifulsoup4
+
+    # Run the email processing script
+    - python clean_emails.py
+
+    # Move output to public directory (required by GitLab Pages)
+    - mv cleaned_emails public
+
+    # Create an index page
+    - python create_index.py
+
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+    - master
