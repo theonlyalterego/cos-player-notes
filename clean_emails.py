@@ -85,6 +85,41 @@ def clean_html(html_content, image_map):
     for tag in soup(['style', 'script', 'meta', 'link', 'title']):
         tag.decompose()
 
+    # Remove quoted/replied content - common patterns
+    # Gmail quotes
+    for quote in soup.find_all(class_=re.compile(r'gmail_quote|gmail_extra')):
+        quote.decompose()
+
+    # Standard blockquotes (email replies)
+    for quote in soup.find_all('blockquote'):
+        quote.decompose()
+
+    # Other common quote classes
+    for quote in soup.find_all(class_=re.compile(r'quoted.*|quote.*|moz-cite-prefix', re.IGNORECASE)):
+        quote.decompose()
+
+    # Outlook/Yahoo quote divs
+    for div in soup.find_all('div', id=re.compile(r'divRplyFwdMsg|yahoo_quoted')):
+        div.decompose()
+
+    # Remove "On [date] ... wrote:" lines (common quote headers)
+    for elem in soup.find_all(string=re.compile(r'^On .+ wrote:$', re.MULTILINE)):
+        # Remove the parent element if it only contains this text
+        parent = elem.parent
+        if parent and parent.get_text(strip=True) == elem.strip():
+            parent.decompose()
+        else:
+            elem.replace_with('')
+
+    # Remove lines starting with > (plain text quotes that made it through)
+    for elem in soup.find_all(string=re.compile(r'^>+', re.MULTILINE)):
+        lines = elem.split('\n')
+        filtered_lines = [line for line in lines if not line.strip().startswith('>')]
+        if filtered_lines:
+            elem.replace_with('\n'.join(filtered_lines))
+        else:
+            elem.replace_with('')
+
     # Update image sources
     for img in soup.find_all('img'):
         src = img.get('src', '')
