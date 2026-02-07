@@ -1,18 +1,14 @@
-image: python:3.13
+# Manual deployment workflow:
+# 1. Run clean_emails.py locally (requires mbox file)
+# 2. Use organize_interface.html to order content and exclude messages
+# 3. Run generate_final.py to create public/ directory
+# 4. Commit and push public/ directory
 
 pages:
   stage: deploy
   script:
-    # Install dependencies
-    - pip install beautifulsoup4
-
-    # Run the email processing script
-    - python clean_emails.py
-
-    # Generate the final combined deployment from saved order
-    # (requires content_order.json to be committed to repo)
-    - python generate_final.py
-
+    - echo "Deploying pre-built site from public/ directory"
+    - ls -lh public/
   artifacts:
     paths:
       - public
