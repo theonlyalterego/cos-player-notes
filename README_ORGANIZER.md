@@ -7,7 +7,8 @@ This tool allows you to organize your emails and notes in a specific order for y
 1. **Process Emails** - Extract and clean emails from mbox
 2. **Organize Content** - Use drag-and-drop interface to arrange content
 3. **Generate Deployment** - Create final combined HTML file
-4. **Deploy to GitLab** - Push and let CI/CD handle deployment
+4. **Scrub PII** - Remove personal information (emails, real names)
+5. **Deploy to GitLab** - Push and let CI/CD handle deployment
 
 ## 🚀 Step-by-Step Guide
 
@@ -77,27 +78,70 @@ This creates:
 - Table of contents with jump links
 - Section numbers matching your organized order
 
-**Preview locally:**
+### Step 4: Scrub PII (Personally Identifiable Information)
+
+**IMPORTANT:** Before deploying, remove personal information.
+
+**First-time setup:**
+
+1. Copy the example config file:
+   ```bash
+   copy pii_config.json.example pii_config.json
+   ```
+
+2. Edit `pii_config.json` and replace the placeholder names with actual player/DM names to scrub.
+
+3. The config file uses regex patterns. Use `\b` for word boundaries:
+   ```json
+   {
+     "name_replacements": {
+       "\\bDMName\\b": "DM",
+       "\\bPlayerName\\b": "Player"
+     }
+   }
+   ```
+
+**Run the scrubber:**
+
+```bash
+python scrub_pii.py
+```
+
+This automatically removes/replaces:
+- ✅ Email addresses → `[email removed]`
+- ✅ Player/DM real names (configured in pii_config.json) → `Player` or `DM`
+- ✅ Mailto links → removed
+- ❌ Character names → **preserved** (don't add them to config!)
+
+**Note:** `pii_config.json` is gitignored and stays private on your machine.
+
+**Preview the scrubbed version:**
 ```bash
 cd public
 python -m http.server 8080
 # Open http://localhost:8080
 ```
 
-### Step 4: Deploy to GitLab Pages
+### Step 5: Deploy to GitLab Pages
 
-Commit and push your changes (including `content_order.json`):
+**Manual Deployment** (recommended - keeps mbox files private):
+
+Commit and push the generated files:
 
 ```bash
-git add content_order.json player_notes.html
-git commit -m "Updated content organization"
-git push
+git add public/ content_order.json message_exclusions.json
+git commit -m "Update campaign content"
+git push origin main
 ```
 
-GitLab CI will automatically:
-1. Run `clean_emails.py` to process the mbox
-2. Run `generate_final.py` using your saved order
-3. Deploy the `public/` directory to GitLab Pages
+GitLab CI will automatically deploy the `public/` directory to GitLab Pages.
+
+**What gets committed:**
+- ✅ `public/` - Final deployment (PII-scrubbed)
+- ✅ `content_order.json` - Your content organization
+- ✅ `message_exclusions.json` - Message-level exclusions
+- ❌ `cleaned_emails/` - gitignored (intermediate files)
+- ❌ `*.mbox` - gitignored (raw email data)
 
 Your site will be live at `https://yourusername.gitlab.io/yourproject/`
 

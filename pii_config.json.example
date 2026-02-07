@@ -1,0 +1,13 @@
+{
+  "comment": "Configure what names to scrub from the deployment. Copy this file to pii_config.json and fill in the actual names.",
+  "name_replacements": {
+    "\\bDMFirstName\\b": "DM",
+    "\\bPlayerFirstName\\s+PlayerLastName\\b": "Player",
+    "@PlayerFirstName\\s+PlayerLastName": "@Player",
+    "\\bPlayerName1\\b": "Player",
+    "\\bPlayerName2\\b": "Player",
+    "\\bPlayerName3\\b": "Player",
+    "\\bPlayerName4\\b": "Player",
+    "\\bPlayerName5\\b": "Player"
+  }
+}

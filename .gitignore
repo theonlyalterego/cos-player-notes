@@ -3,6 +3,7 @@ db.xml
 emails/
 *.mbox
 cleaned_emails/
+pii_config.json
 # But DO commit these - they're needed for deployment
 !content_order.json
 !message_exclusions.json
