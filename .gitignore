@@ -2,3 +2,7 @@ myenv/
 db.xml
 emails/
 *.mbox
+cleaned_emails/
+# But DO commit these - they're needed for deployment
+!content_order.json
+!message_exclusions.json

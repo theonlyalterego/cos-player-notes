@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Exclusions - Curse of Strahd</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.8;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .thread-selector {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .thread-selector select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .messages-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .message-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .message-item.excluded {
+            opacity: 0.5;
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-date {
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .exclude-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .message-preview {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .actions {
+            position: sticky;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            margin: 0 0.5rem;
+        }
+
+        .btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+        }
+
+        .btn.secondary:hover {
+            background: #5a6268;
+        }
+
+        .status {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status.success {
+            color: #28a745;
+        }
+
+        .status.error {
+            color: #dc3545;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .stats {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .excluded-badge {
+            background: #dc3545;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="organize_interface.html" class="back-link">← Back to Organizer</a>
+
+        <div class="header">
+            <h1>📧 Message Exclusions</h1>
+            <p>Select individual messages within threads to exclude from player deployment</p>
+        </div>
+
+        <div class="thread-selector">
+            <select id="threadSelect">
+                <option value="">Select a thread to manage...</option>
+            </select>
+        </div>
+
+        <div class="messages-container" id="messagesContainer">
+            <div class="empty-state">Select a thread above to manage message exclusions</div>
+        </div>
+
+        <div class="actions" id="actions" style="display: none;">
+            <button class="btn secondary" onclick="selectAll()">Select All</button>
+            <button class="btn secondary" onclick="deselectAll()">Deselect All</button>
+            <button class="btn" onclick="saveExclusions()">💾 Save Exclusions</button>
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        let allThreads = [];
+        let currentMessages = [];
+        let exclusions = [];
+
+        // Load threads and exclusions on page load
+        async function loadData() {
+            try {
+                const [itemsRes, exclusionsRes] = await Promise.all([
+                    fetch('/api/items'),
+                    fetch('/api/message-exclusions')
+                ]);
+
+                allThreads = await itemsRes.json();
+                const exclusionsData = await exclusionsRes.json();
+                exclusions = exclusionsData.exclusions || [];
+
+                populateThreadSelector();
+            } catch (error) {
+                showStatus('Failed to load data: ' + error.message, 'error');
+            }
+        }
+
+        function populateThreadSelector() {
+            const select = document.getElementById('threadSelect');
+            select.innerHTML = '<option value="">Select a thread to manage...</option>';
+
+            allThreads.filter(t => t.type === 'email').forEach(thread => {
+                const option = document.createElement('option');
+                option.value = thread.filename;
+                option.textContent = thread.title;
+                select.appendChild(option);
+            });
+
+            select.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    loadMessages(e.target.value);
+                }
+            });
+        }
+
+        async function loadMessages(filename) {
+            try {
+                const response = await fetch(`/api/messages?file=${encodeURIComponent(filename)}`);
+                const data = await response.json();
+                currentMessages = data.messages || [];
+
+                renderMessages(filename);
+                document.getElementById('actions').style.display = 'block';
+            } catch (error) {
+                showStatus('Failed to load messages: ' + error.message, 'error');
+            }
+        }
+
+        function renderMessages(filename) {
+            const container = document.getElementById('messagesContainer');
+
+            if (currentMessages.length === 0) {
+                container.innerHTML = '<div class="empty-state">No messages found in this thread</div>';
+                return;
+            }
+
+            const excludedCount = currentMessages.filter(m =>
+                isMessageExcluded(filename, m.date)
+            ).length;
+
+            let html = `<div class="stats">
+                ${currentMessages.length} messages • ${excludedCount} excluded
+            </div>`;
+
+            currentMessages.forEach((message, idx) => {
+                const isExcluded = isMessageExcluded(filename, message.date);
+                html += `
+                    <div class="message-item ${isExcluded ? 'excluded' : ''}" data-index="${idx}">
+                        <div class="message-header">
+                            <div class="message-date">
+                                #${idx + 1} - ${message.date || 'No date'}
+                                ${isExcluded ? '<span class="excluded-badge">EXCLUDED</span>' : ''}
+                            </div>
+                            <label>
+                                <input type="checkbox"
+                                       class="exclude-checkbox"
+                                       data-filename="${filename}"
+                                       data-date="${message.date || ''}"
+                                       ${isExcluded ? 'checked' : ''}
+                                       onchange="toggleMessageExclusion(this)">
+                                Exclude
+                            </label>
+                        </div>
+                        <div class="message-preview">${message.preview}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function isMessageExcluded(filename, date) {
+            return exclusions.some(e =>
+                e.filename === filename && e.date === date
+            );
+        }
+
+        function toggleMessageExclusion(checkbox) {
+            const filename = checkbox.dataset.filename;
+            const date = checkbox.dataset.date;
+            const messageItem = checkbox.closest('.message-item');
+
+            if (checkbox.checked) {
+                // Add exclusion
+                if (!isMessageExcluded(filename, date)) {
+                    exclusions.push({ filename, date });
+                }
+                messageItem.classList.add('excluded');
+            } else {
+                // Remove exclusion
+                exclusions = exclusions.filter(e =>
+                    !(e.filename === filename && e.date === date)
+                );
+                messageItem.classList.remove('excluded');
+            }
+
+            // Update stats
+            const threadSelect = document.getElementById('threadSelect');
+            renderMessages(threadSelect.value);
+        }
+
+        function selectAll() {
+            document.querySelectorAll('.exclude-checkbox').forEach(cb => {
+                if (!cb.checked) {
+                    cb.checked = true;
+                    toggleMessageExclusion(cb);
+                }
+            });
+        }
+
+        function deselectAll() {
+            document.querySelectorAll('.exclude-checkbox').forEach(cb => {
+                if (cb.checked) {
+                    cb.checked = false;
+                    toggleMessageExclusion(cb);
+                }
+            });
+        }
+
+        async function saveExclusions() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '💾 Saving...';
+
+            try {
+                const response = await fetch('/api/save-message-exclusions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ exclusions })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus(`✓ Saved ${exclusions.length} message exclusions`, 'success');
+                } else {
+                    showStatus('Failed to save exclusions', 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 Save Exclusions';
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.textContent = '';
+                }, 3000);
+            }
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>

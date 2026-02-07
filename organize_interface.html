@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Organizer - Curse of Strahd</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid rgba(220, 53, 69, 0.5);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .available-items {
+            width: 300px;
+        }
+
+        .ordered-list {
+            width: 300px;
+        }
+
+        .preview-panel {
+            flex: 1;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            cursor: move;
+            transition: all 0.2s;
+            border-left: 4px solid #6c757d;
+        }
+
+        .item:hover {
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateX(5px);
+        }
+
+        .item.dragging {
+            opacity: 0.5;
+        }
+
+        .item.email {
+            border-left-color: #007bff;
+        }
+
+        .item.notes {
+            border-left-color: #28a745;
+        }
+
+        .item-title {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        .item-date {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.2rem;
+            font-style: italic;
+        }
+
+        .item-number {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .item.excluded {
+            opacity: 0.6;
+            border-left-color: #6c757d;
+            background: rgba(200, 200, 200, 0.3);
+        }
+
+        .item.excluded .dm-badge {
+            display: inline-block;
+        }
+
+        .dm-badge {
+            display: none;
+            background: #6c757d;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .exclude-btn {
+            float: right;
+            background: transparent;
+            border: 1px solid #6c757d;
+            color: #6c757d;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .exclude-btn:hover {
+            background: #6c757d;
+            color: white;
+        }
+
+        .item.excluded .exclude-btn {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+
+        .drop-zone {
+            min-height: 100px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .drop-zone.drag-over {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .actions {
+            padding: 1rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .status.success {
+            color: #28a745;
+        }
+
+        .status.error {
+            color: #dc3545;
+        }
+
+        /* Scrollbar styling */
+        .panel-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .panel-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏰 Content Organizer</h1>
+        <p>Drag items from Available to Ordered List, then preview and save your arrangement</p>
+        <p id="excludedInfo" style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;"></p>
+        <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+            <a href="message_exclusions.html" style="color: #dc3545; text-decoration: none;">
+                📧 Manage Message-Level Exclusions →
+            </a>
+        </p>
+    </div>
+
+    <div class="container">
+        <!-- Available Items -->
+        <div class="panel available-items">
+            <div class="panel-header">📚 Available Content</div>
+            <div class="panel-content" id="availableItems">
+                <div class="empty-state">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Ordered List -->
+        <div class="panel ordered-list">
+            <div class="panel-header">📋 Ordered List</div>
+            <div class="panel-content" id="orderedList">
+                <div class="drop-zone" id="dropZone">
+                    Drag items here to build your ordered list
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="panel preview-panel">
+            <div class="panel-header">👁️ Preview (click item to view)</div>
+            <div class="panel-content">
+                <iframe class="preview-frame" id="previewFrame"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn" id="saveBtn" disabled>💾 Save Order</button>
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        let availableItems = [];
+        let orderedItems = [];
+
+        // Load items on page load
+        async function loadItems() {
+            try {
+                const [itemsRes, orderRes] = await Promise.all([
+                    fetch('/api/items'),
+                    fetch('/api/order')
+                ]);
+
+                availableItems = await itemsRes.json();
+                const savedOrder = await orderRes.json();
+
+                // Restore saved order if exists
+                if (savedOrder.items && savedOrder.items.length > 0) {
+                    // Merge saved data with current metadata (like dates)
+                    orderedItems = savedOrder.items.map(savedItem => {
+                        const availItem = availableItems.find(a => a.filename === savedItem.filename);
+                        if (availItem) {
+                            // Merge: keep excluded from saved, update metadata from available
+                            return {
+                                ...availItem,
+                                excluded: savedItem.excluded || false
+                            };
+                        }
+                        return savedItem;
+                    });
+
+                    renderOrderedList();
+                }
+
+                renderAvailableItems();
+            } catch (error) {
+                showStatus('Failed to load items: ' + error.message, 'error');
+            }
+        }
+
+        function renderAvailableItems() {
+            const container = document.getElementById('availableItems');
+            container.innerHTML = '';
+
+            // Filter out items that are already in the ordered list
+            const orderedFilenames = orderedItems.map(i => i.filename);
+            const availableToShow = availableItems.filter(item => !orderedFilenames.includes(item.filename));
+
+            if (availableToShow.length === 0) {
+                container.innerHTML = '<div class="empty-state">All items have been organized!</div>';
+                return;
+            }
+
+            availableToShow.forEach(item => {
+                const itemEl = createItemElement(item, false);
+                container.appendChild(itemEl);
+            });
+        }
+
+        function renderOrderedList() {
+            const container = document.getElementById('orderedList');
+            const dropZone = document.getElementById('dropZone');
+
+            // Clear existing items (but keep drop zone)
+            Array.from(container.children).forEach(child => {
+                if (child.id !== 'dropZone' && child.classList.contains('item')) {
+                    child.remove();
+                }
+            });
+
+            if (orderedItems.length === 0) {
+                dropZone.style.display = 'flex';
+            } else {
+                dropZone.style.display = 'none';
+                orderedItems.forEach((item, index) => {
+                    const itemEl = createItemElement(item, true, index + 1);
+                    container.appendChild(itemEl);
+                });
+            }
+
+            // Enable/disable save button
+            document.getElementById('saveBtn').disabled = orderedItems.length === 0;
+
+            // Update excluded count
+            updateExcludedInfo();
+        }
+
+        function createItemElement(item, isOrdered, number = null) {
+            const div = document.createElement('div');
+            div.className = `item ${item.type}`;
+            if (item.excluded) {
+                div.classList.add('excluded');
+            }
+            div.draggable = true;
+            div.dataset.filename = item.filename;
+
+            let content = '';
+            if (number !== null) {
+                content += `<span class="item-number">#${number}</span>`;
+            }
+            if (item.excluded) {
+                content += `<span class="dm-badge">DM ONLY</span>`;
+            }
+
+            // Only show exclude button for items in the ordered list
+            if (isOrdered) {
+                content += `
+                    <button class="exclude-btn" data-filename="${item.filename}" title="${item.excluded ? 'Include for players' : 'Exclude (DM only)'}">
+                        ${item.excluded ? '👁️ Include' : '🚫 Exclude'}
+                    </button>
+                `;
+            }
+
+            content += `
+                <div class="item-title">${item.title}</div>
+                <div class="item-meta">${item.type} • ${item.filename}</div>
+                ${item.date ? `<div class="item-date">📅 ${item.date}</div>` : ''}
+            `;
+            div.innerHTML = content;
+
+            // Drag events
+            div.addEventListener('dragstart', handleDragStart);
+            div.addEventListener('dragend', handleDragEnd);
+
+            // Click to preview (but not on button)
+            div.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('exclude-btn')) {
+                    previewItem(item.filename);
+                }
+            });
+
+            // Exclude button (only if ordered)
+            if (isOrdered) {
+                const excludeBtn = div.querySelector('.exclude-btn');
+                excludeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleExclude(item.filename);
+                });
+            }
+
+            return div;
+        }
+
+        function handleDragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.dataset.filename);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        // Set up drop zone
+        const orderedListContainer = document.getElementById('orderedList');
+
+        orderedListContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+
+            const afterElement = getDragAfterElement(orderedListContainer, e.clientY);
+            const dragging = document.querySelector('.dragging');
+            const dropZone = document.getElementById('dropZone');
+
+            if (afterElement == null) {
+                if (orderedItems.length === 0) {
+                    dropZone.classList.add('drag-over');
+                } else {
+                    orderedListContainer.appendChild(dragging);
+                }
+            } else {
+                dropZone.classList.remove('drag-over');
+                orderedListContainer.insertBefore(dragging, afterElement);
+            }
+        });
+
+        orderedListContainer.addEventListener('dragleave', (e) => {
+            if (e.target.id === 'dropZone') {
+                e.target.classList.remove('drag-over');
+            }
+        });
+
+        orderedListContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const dropZone = document.getElementById('dropZone');
+            dropZone.classList.remove('drag-over');
+
+            const filename = e.dataTransfer.getData('text/plain');
+
+            // Check if item is being dragged from available or reordered within ordered list
+            const isNewItem = !orderedItems.find(i => i.filename === filename);
+
+            if (isNewItem) {
+                // Adding from available list
+                const item = availableItems.find(i => i.filename === filename);
+                if (item) {
+                    orderedItems.push({ ...item, excluded: false });
+                }
+            }
+
+            // Get the current order from DOM (handles both new items and reordering)
+            const itemElements = Array.from(orderedListContainer.querySelectorAll('.item'));
+            const newOrder = itemElements.map(el => {
+                const existingItem = orderedItems.find(i => i.filename === el.dataset.filename);
+                if (existingItem) {
+                    return existingItem; // Preserve all properties including excluded
+                }
+                // Shouldn't happen, but fallback to available items
+                return availableItems.find(i => i.filename === el.dataset.filename);
+            }).filter(Boolean);
+
+            orderedItems = newOrder;
+            renderOrderedList();
+            renderAvailableItems(); // Update available list to hide newly added items
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.item:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function previewItem(filename) {
+            const frame = document.getElementById('previewFrame');
+            frame.src = `/api/preview?file=${encodeURIComponent(filename)}`;
+        }
+
+        function toggleExclude(filename) {
+            // Toggle in ordered items (only ordered items can be excluded)
+            const orderedItem = orderedItems.find(i => i.filename === filename);
+            if (orderedItem) {
+                orderedItem.excluded = !orderedItem.excluded;
+                renderOrderedList();
+            }
+        }
+
+        function updateExcludedInfo() {
+            const excludedCount = orderedItems.filter(i => i.excluded).length;
+            const totalCount = orderedItems.length;
+            const includedCount = totalCount - excludedCount;
+            const info = document.getElementById('excludedInfo');
+
+            if (excludedCount > 0) {
+                info.textContent = `${includedCount} item(s) for players • ${excludedCount} DM-only item(s) excluded`;
+                info.style.display = 'block';
+            } else if (totalCount > 0) {
+                info.textContent = `${totalCount} item(s) for players`;
+                info.style.display = 'block';
+            } else {
+                info.style.display = 'none';
+            }
+        }
+
+        async function saveOrder() {
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = '💾 Saving...';
+
+            try {
+                const response = await fetch('/api/save-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ items: orderedItems })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('✓ Order saved successfully! Run generate_final.py to create deployment.', 'success');
+                } else {
+                    showStatus('Failed to save order', 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Save Order';
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.textContent = '';
+                }, 5000);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('saveBtn').addEventListener('click', saveOrder);
+
+        // Initialize
+        loadItems();
+    </script>
+</body>
+</html>

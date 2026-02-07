@@ -9,11 +9,9 @@ pages:
     # Run the email processing script
     - python clean_emails.py
 
-    # Move output to public directory (required by GitLab Pages)
-    - mv cleaned_emails public
-
-    # Create an index page
-    - python create_index.py
+    # Generate the final combined deployment from saved order
+    # (requires content_order.json to be committed to repo)
+    - python generate_final.py
 
   artifacts:
     paths:
