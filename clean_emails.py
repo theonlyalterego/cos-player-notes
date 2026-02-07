@@ -3,16 +3,19 @@ import os
 import re
 import hashlib
 import base64
+from email import message_from_file
 from bs4 import BeautifulSoup
 from email.utils import parsedate_to_datetime
 
 # CONFIGURATION
 MBOX_FILE = './emails/takeout-20260206T185416Z-3-001/Takeout/Mail/RPG-Curse of Strahd.mbox'
+NEW_EMAILS_DIR = './emails/new_emails'
 OUTPUT_DIR = 'cleaned_emails'
 IMAGES_DIR = os.path.join(OUTPUT_DIR, 'images')
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
+os.makedirs(NEW_EMAILS_DIR, exist_ok=True)
 
 def save_image(image_data, content_id, filename_hint=None):
     """Save image data and return the relative path"""
@@ -154,9 +157,8 @@ def clean_html(html_content, image_map):
     # Return cleaned HTML (keep structure, not just text)
     return str(soup)
 
-threads = {}
-
-for message in mailbox.mbox(MBOX_FILE):
+def process_message(message, threads):
+    """Process a single email message and add it to threads"""
     subject = str(message['subject'] or "Untitled Journal Entry")
     clean_subj = re.sub(r'^(Re|Fwd|FW):\s+', '', subject, flags=re.IGNORECASE).strip()
 
@@ -172,6 +174,35 @@ for message in mailbox.mbox(MBOX_FILE):
         'date_parsed': parsedate_to_datetime(message['date']) if message['date'] else None,
         'body': clean_html(html_body, image_map)
     })
+
+threads = {}
+
+# Process mbox file
+print(f"Processing mbox file: {MBOX_FILE}")
+mbox_count = 0
+for message in mailbox.mbox(MBOX_FILE):
+    process_message(message, threads)
+    mbox_count += 1
+print(f"  Loaded {mbox_count} messages from mbox")
+
+# Process .eml files from new_emails folder
+eml_count = 0
+if os.path.exists(NEW_EMAILS_DIR):
+    print(f"Processing new .eml files from: {NEW_EMAILS_DIR}")
+    for filename in os.listdir(NEW_EMAILS_DIR):
+        if filename.lower().endswith('.eml'):
+            eml_path = os.path.join(NEW_EMAILS_DIR, filename)
+            try:
+                with open(eml_path, 'r', encoding='utf-8', errors='ignore') as eml_file:
+                    message = message_from_file(eml_file)
+                    process_message(message, threads)
+                    eml_count += 1
+                    print(f"  Loaded: {filename}")
+            except Exception as e:
+                print(f"  Error processing {filename}: {e}")
+    print(f"  Loaded {eml_count} messages from .eml files")
+else:
+    print(f"No new_emails folder found at {NEW_EMAILS_DIR}")
 
 # Sort each thread by date (oldest first)
 for subject in threads:
@@ -248,4 +279,5 @@ for subject, messages in threads.items():
 </html>
 ''')
 
-print(f"Successfully processed {len(threads)} lore threads.")
+print(f"\nSuccessfully processed {len(threads)} lore threads.")
+print(f"Total messages: {mbox_count + eml_count} ({mbox_count} from mbox, {eml_count} from .eml files)")
