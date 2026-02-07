@@ -34,6 +34,35 @@ def load_message_exclusions():
         data = json.load(f)
         return data.get('exclusions', [])
 
+def extract_player_note(filepath, note_id, title):
+    """Extract a specific note from player_notes.html"""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    soup = BeautifulSoup(content, 'html.parser')
+
+    # Find the note by ID
+    note_content = soup.find('div', id=note_id)
+    if note_content:
+        # Get the parent card to include the header
+        note_card = note_content.find_parent('div', class_='note')
+        if note_card:
+            # Remove the onclick and styling that's for the collapsible interface
+            header = note_card.find('div', class_='card-header')
+            if header:
+                if header.has_attr('onclick'):
+                    del header['onclick']
+                header['class'] = ['card-header', 'bg-info', 'text-white']
+
+            # Make content visible (remove display:none)
+            if note_content.has_attr('style'):
+                del note_content['style']
+            note_content['class'] = ['card-body']
+
+            return title, str(note_card)
+
+    return title, f'<p>Note not found: {note_id}</p>'
+
 def extract_body_content(filepath, message_exclusions, filename):
     """Extract the main content from an HTML file, filtering out excluded messages"""
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -234,22 +263,49 @@ def generate_combined_html(ordered_items):
         html_parts.append(f'                <li><a href="#{section_id}"><span class="section-number">{idx}</span>{title}</a></li>\n')
 
         # Get content
-        if filename == 'player_notes.html':
+        # Check if this is an individual player note
+        if filename.startswith('player_notes.html#'):
+            actual_file, note_id = filename.split('#', 1)
+            filepath = actual_file
+            if os.path.exists(filepath):
+                content_title, content_body = extract_player_note(filepath, note_id, title)
+                content_sections.append({
+                    'id': section_id,
+                    'number': idx,
+                    'title': content_title,
+                    'body': content_body,
+                    'type': item['type']
+                })
+            else:
+                print(f"Warning: File not found: {filepath}")
+        elif filename == 'player_notes.html':
+            # Legacy: handle old single player_notes item
             filepath = filename
+            if os.path.exists(filepath):
+                content_title, content_body = extract_body_content(filepath, message_exclusions, filename)
+                content_sections.append({
+                    'id': section_id,
+                    'number': idx,
+                    'title': content_title,
+                    'body': content_body,
+                    'type': item['type']
+                })
+            else:
+                print(f"Warning: File not found: {filepath}")
         else:
+            # Regular email thread
             filepath = os.path.join(OUTPUT_DIR, filename)
-
-        if os.path.exists(filepath):
-            content_title, content_body = extract_body_content(filepath, message_exclusions, filename)
-            content_sections.append({
-                'id': section_id,
-                'number': idx,
-                'title': content_title,
-                'body': content_body,
-                'type': item['type']
-            })
-        else:
-            print(f"Warning: File not found: {filepath}")
+            if os.path.exists(filepath):
+                content_title, content_body = extract_body_content(filepath, message_exclusions, filename)
+                content_sections.append({
+                    'id': section_id,
+                    'number': idx,
+                    'title': content_title,
+                    'body': content_body,
+                    'type': item['type']
+                })
+            else:
+                print(f"Warning: File not found: {filepath}")
 
     # Close TOC
     html_parts.append('''            </ul>

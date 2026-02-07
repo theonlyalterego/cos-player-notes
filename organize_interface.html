@@ -270,13 +270,8 @@
 <body>
     <div class="header">
         <h1>🏰 Content Organizer</h1>
-        <p>Drag items from Available to Ordered List, then preview and save your arrangement</p>
+        <p>Drag items to order • Click preview to see content • Click 🚫 buttons in preview to exclude messages</p>
         <p id="excludedInfo" style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;"></p>
-        <p style="font-size: 0.85rem; margin-top: 0.5rem;">
-            <a href="message_exclusions.html" style="color: #dc3545; text-decoration: none;">
-                📧 Manage Message-Level Exclusions →
-            </a>
-        </p>
     </div>
 
     <div class="container">
@@ -315,17 +310,21 @@
     <script>
         let availableItems = [];
         let orderedItems = [];
+        let messageExclusions = [];
 
         // Load items on page load
         async function loadItems() {
             try {
-                const [itemsRes, orderRes] = await Promise.all([
+                const [itemsRes, orderRes, exclusionsRes] = await Promise.all([
                     fetch('/api/items'),
-                    fetch('/api/order')
+                    fetch('/api/order'),
+                    fetch('/api/message-exclusions')
                 ]);
 
                 availableItems = await itemsRes.json();
                 const savedOrder = await orderRes.json();
+                const exclusionsData = await exclusionsRes.json();
+                messageExclusions = exclusionsData.exclusions || [];
 
                 // Restore saved order if exists
                 if (savedOrder.items && savedOrder.items.length > 0) {
@@ -544,7 +543,7 @@
 
         function previewItem(filename) {
             const frame = document.getElementById('previewFrame');
-            frame.src = `/api/preview?file=${encodeURIComponent(filename)}`;
+            frame.src = `/api/preview-with-controls?file=${encodeURIComponent(filename)}`;
         }
 
         function toggleExclude(filename) {
@@ -611,6 +610,45 @@
                 setTimeout(() => {
                     status.textContent = '';
                 }, 5000);
+            }
+        }
+
+        // Handle message exclusion from iframe
+        window.addEventListener('message', async (event) => {
+            if (event.data.type === 'toggleMessageExclusion') {
+                const { filename, date, excluded } = event.data;
+
+                if (excluded) {
+                    // Add exclusion
+                    if (!messageExclusions.find(e => e.filename === filename && e.date === date)) {
+                        messageExclusions.push({ filename, date });
+                    }
+                } else {
+                    // Remove exclusion
+                    messageExclusions = messageExclusions.filter(e =>
+                        !(e.filename === filename && e.date === date)
+                    );
+                }
+
+                // Auto-save message exclusions
+                await saveMessageExclusions();
+            }
+        });
+
+        async function saveMessageExclusions() {
+            try {
+                const response = await fetch('/api/save-message-exclusions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ exclusions: messageExclusions })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    console.log('Message exclusions saved:', messageExclusions.length);
+                }
+            } catch (error) {
+                console.error('Failed to save message exclusions:', error);
             }
         }
 
